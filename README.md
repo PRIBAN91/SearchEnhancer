@@ -1,5 +1,5 @@
 # SearchEnhancer
-Targeted at providing a fast, efficient and effective searching experience to a user.
+###Targeted at providing a fast, efficient and effective searching experience to a user.
 
 In an era of fast paced world, we want machines to understand us better than we understand ourselves.We
 want to spend minimum time spent transferring information to machines before they can take over.We want

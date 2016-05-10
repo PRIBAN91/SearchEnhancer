@@ -45,6 +45,7 @@ public class MachineLearning {
 			int arrlen = words.length;
 			wordList.add(new WordProbability(s, dt.unsmoothedProbability(word1, words[arrlen - 1])));
 		}
+		Collections.sort(wordList);
 		List<String> list = new ArrayList<>();
 		for (WordProbability wrd : wordList)
 			list.add(wrd.toString());

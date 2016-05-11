@@ -135,8 +135,8 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 				trie.addWord(s);
 				arr[step++] = s;
 				hs.add(s);
-				if (StringUtils.countMatches(s, " ")>=2)
-						trigramSet.add(s);
+				if (StringUtils.countMatches(s, " ") >= 2)
+					trigramSet.add(s);
 			}
 			DynamicBigram db = DynamicBigram.getInstance();
 			db.initializeTraining(hs);
@@ -155,7 +155,8 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 								+ " Please increase your Virtual Machine(VM) space in Apache Tomcat for successful continuation! ");
 				System.exit(0);
 			} else {
-				System.out.println("Unexpected exception : " + t);
+				System.out.println("Unexpected exception : ");
+				t.printStackTrace();
 				System.exit(0);
 			}
 		}

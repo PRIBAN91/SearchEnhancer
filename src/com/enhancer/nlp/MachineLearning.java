@@ -1,7 +1,8 @@
 package com.enhancer.nlp;
 
 import java.util.*;
-import com.enhancer.model.WordProbability;
+import com.enhancer.model.BigramWord;
+import com.enhancer.model.TrigramWord;
 
 public class MachineLearning {
 
@@ -13,24 +14,25 @@ public class MachineLearning {
 		int len = sarr.length;
 		List<String> firstWordList = new ArrayList<>();
 		List<String> list = new ArrayList<>();
-		if (len >= 3) {
+		if (len >= 4) {
 			word1 = sarr[len - 3] + " " + sarr[len - 2];
 			list = switchToTrigrams(suggList, word1);
 		} else {
 			word1 = sarr[0];
-			startingProb = db.unsmoothedProbability(":S", sarr[0]);
-			secondWordProb = db.secondWordProbability(firstWordList, sarr[0]);
-			List<WordProbability> wordList = new ArrayList<>();
+			startingProb = db.unsmoothedProbability(":S", word1);
+			secondWordProb = db.secondWordProbability(firstWordList, word1);
+			List<BigramWord> wordList = new ArrayList<>();
 			if (secondWordProb >= startingProb) {
-				for (String s : firstWordList)
-					wordList.add(new WordProbability(s + " " + word1, db.unsmoothedProbability(s, word1)));
+				for (String s : firstWordList) {
+					String tmp = s + " " + word1;
+					wordList.add(new BigramWord(tmp, db.perplexity(tmp)));
+				}
 			}
-			for (String s : suggList) {
-				String arr[] = s.split(" ");
-				wordList.add(new WordProbability(s, db.unsmoothedProbability(word1, arr[1])));
-			}
+			for (String s : suggList)
+				wordList.add(new BigramWord(s, db.perplexity(s)));
+
 			Collections.sort(wordList);
-			for (WordProbability wrd : wordList)
+			for (BigramWord wrd : wordList)
 				list.add(wrd.toString());
 		}
 		return list;
@@ -39,15 +41,15 @@ public class MachineLearning {
 	public List<String> switchToTrigrams(List<String> suggList, String word1) {
 
 		DynamicTrigram dt = DynamicTrigram.getInstance();
-		List<WordProbability> wordList = new ArrayList<>();
+		List<TrigramWord> wordList = new ArrayList<>();
 		for (String s : suggList) {
 			String words[] = s.split(" ");
 			int arrlen = words.length;
-			wordList.add(new WordProbability(s, dt.unsmoothedProbability(word1, words[arrlen - 1])));
+			wordList.add(new TrigramWord(s, dt.unsmoothedProbability(word1, words[arrlen - 1])));
 		}
 		Collections.sort(wordList);
 		List<String> list = new ArrayList<>();
-		for (WordProbability wrd : wordList)
+		for (TrigramWord wrd : wordList)
 			list.add(wrd.toString());
 		return list;
 	}

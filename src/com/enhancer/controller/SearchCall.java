@@ -97,9 +97,18 @@ public class SearchCall extends HttpServlet {
 					desparatePrev = true;
 					list = luw.desperateSearch(trie, list, sarr, prev, searchStr, len, lim);
 				}
+
+				if (list.isEmpty()) {
+					if (spaceEncountered) {
+						list = (List<String>) (session.getAttribute("SuggestionList") != null
+								? session.getAttribute("SuggestionList") : new ArrayList<>());
+						list = learn.calculateMaxLikeEst(list, searchStr);
+					}
+				}
 				System.out.println(list);
 				System.out.println("Time elapsed in this search : " + sw.elapsedTime());
-				session.setAttribute("SuggestionList", list);
+				if (!list.isEmpty())
+					session.setAttribute("SuggestionList", list);
 				session.setAttribute("SpacePresent", spaceEncountered);
 				session.setAttribute("PrevSuggListChk", prevSuggChk);
 				session.setAttribute("CheckContains", checkContains);

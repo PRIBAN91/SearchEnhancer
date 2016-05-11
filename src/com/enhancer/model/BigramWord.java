@@ -1,20 +1,20 @@
 package com.enhancer.model;
 
-public class WordProbability implements Comparable<WordProbability> {
+public class BigramWord implements Comparable<BigramWord> {
 
 	String word;
 	Double prob;
 
-	public WordProbability(String word, double prob) {
+	public BigramWord(String word, double prob) {
 		this.word = word;
 		this.prob = prob;
 	}
 
 	@Override
-	public int compareTo(WordProbability o1) {
+	public int compareTo(BigramWord o1) {
 		if (this.prob.equals(o1.prob))
 			return this.word.compareTo(o1.word);
-		return (int) (o1.prob.compareTo(this.prob));
+		return (int) (this.prob.compareTo(o1.prob));
 	}
 
 	@Override

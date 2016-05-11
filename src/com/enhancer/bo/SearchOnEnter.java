@@ -1,6 +1,9 @@
 package com.enhancer.bo;
 
 import java.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.enhancer.model.Correctspell;
 import com.enhancer.nlp.DynamicBigram;
 import com.enhancer.nlp.DynamicTrigram;
@@ -38,13 +41,12 @@ public class SearchOnEnter {
 		return list;
 	}
 
-	public void updateBigram(String str) {
+	public void updateNgrams(String str) {
 		DynamicBigram db = DynamicBigram.getInstance();
 		db.continueTraining(str);
-		String words[] = str.split(" ");
-		if (words.length >= 3) {
+		if (StringUtils.countMatches(str, " ") >= 2) {
 			DynamicTrigram dt = DynamicTrigram.getInstance();
-			dt.continueTraining(words);
+			dt.continueTraining(str.split(" "));
 		}
 	}
 

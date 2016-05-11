@@ -7,7 +7,7 @@ human and machine interaction to be as meaningful and effective as possible. In 
 to understand us better than we understand ourselves. Maybe that is why Artificial Intelligence
 even exist in this world.
 
-This application is a Search Enhancer targeted for Ecommerce portals and other catalogue based websites.
+This application is a Search API targeted for Ecommerce portals and other catalogue based websites.
 It is based on the Linguistic and Natural Language Processing model.  Java is the programming language used
 and is built on J2EE architecture. A web server (such as Apache Tomcat 8.0 or above) is needed to execute
 this application. A simple table with of list of products will serve as an initial corpus. This has been

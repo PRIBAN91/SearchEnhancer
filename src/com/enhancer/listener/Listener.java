@@ -20,17 +20,16 @@ import javax.servlet.http.HttpSessionBindingListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionIdListener;
 import javax.servlet.http.HttpSessionListener;
-
 import org.apache.commons.lang3.StringUtils;
-
 import com.enhancer.dao.Loadlist;
 import com.enhancer.model.Wordlist;
-import com.enhancer.nlp.DynamicBigram;
+import com.enhancer.nlp.Bigram;
 import com.enhancer.nlp.DynamicTrigram;
 import com.enhancer.util.DbFetchTask;
 import com.enhancer.util.HibernateUtil;
 import com.enhancer.util.Stopwatch;
 import com.enhancer.util.Trie;
+import com.enhancer.util.UpdateBigramTask;
 
 /**
  * Application Lifecycle Listener implementation class Listener
@@ -118,8 +117,10 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 			ServletContext context = arg0.getServletContext();
 			// Initializing TimerTask to fetch from DB after every 10 minutes
 			TimerTask task = new DbFetchTask(context);
+			TimerTask anotherTask = new UpdateBigramTask();
 			timer = new Timer();
-			timer.schedule(task, 600000, 600000);
+			timer.schedule(task, 300000, 1200000);
+			timer.schedule(anotherTask, 600000, 600000);
 			Stopwatch sw = new Stopwatch();
 			Loadlist ls = new Loadlist();
 			TreeSet<Wordlist> ts = ls.loadWordList();
@@ -138,7 +139,7 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 				if (StringUtils.countMatches(s, " ") >= 2)
 					trigramSet.add(s);
 			}
-			DynamicBigram db = DynamicBigram.getInstance();
+			Bigram db = Bigram.getInstance();
 			db.initializeTraining(hs);
 			DynamicTrigram dt = DynamicTrigram.getInstance();
 			dt.initializeTraining(trigramSet);

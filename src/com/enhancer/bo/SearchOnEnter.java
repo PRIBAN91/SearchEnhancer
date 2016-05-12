@@ -1,13 +1,9 @@
 package com.enhancer.bo;
 
 import java.util.*;
-
 import org.apache.commons.lang3.StringUtils;
-
 import com.enhancer.model.Correctspell;
-import com.enhancer.nlp.DynamicBigram;
-import com.enhancer.nlp.DynamicTrigram;
-import com.enhancer.nlp.SpellAutoCorrect;
+import com.enhancer.nlp.*;
 
 public class SearchOnEnter {
 

@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.json.*;
-import com.enhancer.bo.*;
 import com.enhancer.nlp.MachineLearning;
+import com.enhancer.bo.*;
 import com.enhancer.util.*;
 import java.util.*;
+import org.json.*;
 
 /**
  * Servlet implementation class SearchCall
@@ -69,7 +69,7 @@ public class SearchCall extends HttpServlet {
 				list = trie.findCompletions(searchStr);
 				if (!list.isEmpty()) {
 					if (spaceEncountered)
-						list = learn.calculateMaxLikeEst(list, searchStr);
+						list = learn.calculateMostPrabable(list, searchStr);
 					else
 						Collections.sort(list);
 					if (list.size() > lim)
@@ -83,7 +83,7 @@ public class SearchCall extends HttpServlet {
 				}
 				String sarr[] = (String[]) context.getAttribute("ProductArray");
 				needed = lim - list.size();
-				if (len <= 10 && !spaceEncountered) {
+				if (!spaceEncountered) {
 					if (prev.equals("") || prev.equals(searchStr) || !searchStr.startsWith(prev) || checkContains) {
 						checkContains = true;
 						int count = luw.moreSuggestionNeeded(list, sarr, searchStr, len, needed);
@@ -92,10 +92,11 @@ public class SearchCall extends HttpServlet {
 						if ((needed > 0 && count > 0) || checkContains || prev.equals(""))
 							prev = searchStr;
 					}
-				}
-				if (list.isEmpty()) {
-					desparatePrev = true;
-					list = luw.desperateSearch(trie, list, sarr, prev, searchStr, len, lim);
+
+					if (list.isEmpty()) {
+						desparatePrev = true;
+						list = luw.desperateSearch(trie, list, sarr, prev, searchStr, len, lim);
+					}
 				}
 
 				if (list.isEmpty()) {

@@ -3,6 +3,7 @@ package com.enhancer.nlp;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class Bigram {
 
@@ -40,9 +41,9 @@ public class Bigram {
 			ConcurrentHashMap<String, Double> unigramCounts, ConcurrentHashMap<Double, Double> numberOfBigramsWithCount,
 			int totBigrams) {
 
-		this.bigramCounts = new ConcurrentHashMap<String, HashMap<String, Double>>(bigramCounts);
-		this.unigramCounts = new ConcurrentHashMap<String, Double>(unigramCounts);
-		this.numberOfBigramsWithCount = new ConcurrentHashMap<Double, Double>(numberOfBigramsWithCount);
+		this.bigramCounts = deepCopy(bigramCounts);
+		this.unigramCounts = anotherDeepCopy(unigramCounts);
+		this.numberOfBigramsWithCount = anotherDeepCopy(numberOfBigramsWithCount);
 		this.numTrainingBigrams = totBigrams;
 
 		makeGoodTuringCounts();
@@ -160,6 +161,22 @@ public class Bigram {
 			}
 			unigramCounts.put(word1, unigramCount);
 		}
+	}
+
+	public <K1, K2, V> ConcurrentHashMap<K1, HashMap<K2, V>> deepCopy(ConcurrentHashMap<K1, HashMap<K2, V>> original) {
+		ConcurrentHashMap<K1, HashMap<K2, V>> copy = new ConcurrentHashMap<K1, HashMap<K2, V>>();
+		for (Entry<K1, HashMap<K2, V>> entry : original.entrySet()) {
+			copy.put(entry.getKey(), new HashMap<K2, V>(entry.getValue()));
+		}
+		return copy;
+	}
+
+	public <K, V> ConcurrentHashMap<K, V> anotherDeepCopy(ConcurrentHashMap<K, V> original) {
+		ConcurrentHashMap<K, V> copy = new ConcurrentHashMap<K, V>();
+		for (Entry<K, V> entry : original.entrySet()) {
+			copy.put(entry.getKey(), entry.getValue());
+		}
+		return copy;
 	}
 
 }

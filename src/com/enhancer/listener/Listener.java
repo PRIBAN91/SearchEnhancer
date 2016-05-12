@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.enhancer.dao.Loadlist;
 import com.enhancer.model.Wordlist;
 import com.enhancer.nlp.Bigram;
+import com.enhancer.nlp.DynamicBigram;
 import com.enhancer.nlp.DynamicTrigram;
 import com.enhancer.util.DbFetchTask;
 import com.enhancer.util.HibernateUtil;
@@ -120,7 +121,7 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 			TimerTask anotherTask = new UpdateBigramTask();
 			timer = new Timer();
 			timer.schedule(task, 300000, 1200000);
-			timer.schedule(anotherTask, 600000, 600000);
+			timer.schedule(anotherTask, 60000, 60000);
 			Stopwatch sw = new Stopwatch();
 			Loadlist ls = new Loadlist();
 			TreeSet<Wordlist> ts = ls.loadWordList();
@@ -139,10 +140,12 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 				if (StringUtils.countMatches(s, " ") >= 2)
 					trigramSet.add(s);
 			}
-			Bigram db = Bigram.getInstance();
-			db.initializeTraining(hs);
+			Bigram bigram = Bigram.getInstance();
+			bigram.initializeTraining(hs);
 			DynamicTrigram dt = DynamicTrigram.getInstance();
 			dt.initializeTraining(trigramSet);
+			DynamicBigram db = DynamicBigram.getInstance();
+			db.initializeTraining(hs);
 			double time = sw.elapsedTime();
 			System.out.println("Elapsed time : " + time);
 			context.setAttribute("Products", trie);

@@ -10,9 +10,9 @@ public class DynamicBigram {
 	private static DynamicBigram singleton = new DynamicBigram();
 
 	public Set<String> samples;
-	public ConcurrentHashMap<String, HashMap<String, Double>> bigramCounts;
-	public ConcurrentHashMap<String, Double> unigramCounts;
-	public ConcurrentHashMap<Double, Double> numberOfBigramsWithCount;
+	public ConcurrentHashMap<String, HashMap<String, Double>> bigramCount;
+	public ConcurrentHashMap<String, Double> unigramCount;
+	public ConcurrentHashMap<Double, Double> numberOfBigramsWithCounts;
 	public AtomicInteger totBigrams;
 	public final String START = ":S";
 
@@ -25,9 +25,9 @@ public class DynamicBigram {
 
 	public synchronized void initializeTraining(Set<String> samples) {
 		this.samples = samples;
-		this.bigramCounts = new ConcurrentHashMap<>();
-		this.unigramCounts = new ConcurrentHashMap<>();
-		this.numberOfBigramsWithCount = new ConcurrentHashMap<>();
+		this.bigramCount = new ConcurrentHashMap<>();
+		this.unigramCount = new ConcurrentHashMap<>();
+		this.numberOfBigramsWithCounts = new ConcurrentHashMap<>();
 		this.totBigrams = new AtomicInteger(0);
 
 		for (String sample : samples) {
@@ -37,7 +37,7 @@ public class DynamicBigram {
 
 	public void updatePerplexity() {
 		Bigram bigram = Bigram.getInstance();
-		bigram.updatePerplexity(bigramCounts, unigramCounts, numberOfBigramsWithCount, totBigrams.intValue());
+		bigram.updatePerplexity(bigramCount, unigramCount, numberOfBigramsWithCounts, totBigrams.intValue());
 	}
 
 	public synchronized void continueTraining(String searchString) {
@@ -46,15 +46,15 @@ public class DynamicBigram {
 		Matcher matcher = pattern.matcher(searchString);
 		String previousWord = START;
 		while (matcher.find()) {
-			double unigramCount = 0.0;
-			if (unigramCounts.containsKey(previousWord)) {
-				unigramCount = unigramCounts.get(previousWord);
+			double unigramCounter = 0.0;
+			if (unigramCount.containsKey(previousWord)) {
+				unigramCounter = unigramCount.get(previousWord);
 			}
-			unigramCounts.put(previousWord, unigramCount + 1.0);
+			unigramCount.put(previousWord, unigramCounter + 1.0);
 			String match = matcher.group();
 			HashMap<String, Double> innerCounts;
-			if (bigramCounts.containsKey(previousWord)) {
-				innerCounts = bigramCounts.get(previousWord);
+			if (bigramCount.containsKey(previousWord)) {
+				innerCounts = bigramCount.get(previousWord);
 			} else {
 				innerCounts = new HashMap<String, Double>();
 			}
@@ -64,20 +64,20 @@ public class DynamicBigram {
 				count = innerCounts.get(match);
 				// Decrement the number of bigrams with old count for
 				// gt-smoothing
-				numberOfBigramsWithCount.put(count, numberOfBigramsWithCount.get(count) - 1.0);
+				numberOfBigramsWithCounts.put(count, numberOfBigramsWithCounts.get(count) - 1.0);
 			}
 
 			// Add to the size of the training set for gt-smoothing
 			totBigrams.incrementAndGet();
 			innerCounts.put(match, count + 1.0);
-			bigramCounts.put(previousWord, innerCounts);
+			bigramCount.put(previousWord, innerCounts);
 
 			// Increment the number of bigrams with the new count for
 			// gt-smoothing
-			if (!numberOfBigramsWithCount.containsKey(count + 1.0)) {
-				numberOfBigramsWithCount.put(count + 1.0, 1.0);
+			if (!numberOfBigramsWithCounts.containsKey(count + 1.0)) {
+				numberOfBigramsWithCounts.put(count + 1.0, 1.0);
 			} else {
-				numberOfBigramsWithCount.put(count + 1.0, numberOfBigramsWithCount.get(count + 1.0) + 1.0);
+				numberOfBigramsWithCounts.put(count + 1.0, numberOfBigramsWithCounts.get(count + 1.0) + 1.0);
 			}
 			previousWord = match;
 		}

@@ -2,7 +2,6 @@ package com.enhancer.util;
 
 import java.util.Date;
 import java.util.TimerTask;
-
 import com.enhancer.nlp.DynamicBigram;
 
 public class UpdateBigramTask extends TimerTask {

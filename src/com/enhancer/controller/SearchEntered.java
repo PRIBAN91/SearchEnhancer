@@ -59,8 +59,7 @@ public class SearchEntered extends HttpServlet {
 			if (categorySet.contains(searchStr)) {
 				System.out.println("In Hashset contains.");
 				list.add(searchStr);
-				// Commented as work-in progress
-				// luw.updateNgrams(searchStr);
+				luw.updateNgrams(searchStr);
 			} else {
 				String arr[] = (String[]) context.getAttribute("ProductArray");
 				boolean spacePresent = false;

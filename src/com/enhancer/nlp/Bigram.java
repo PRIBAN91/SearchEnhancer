@@ -13,7 +13,7 @@ public class Bigram {
 	public ConcurrentHashMap<String, Double> unigramCounts;
 	public ConcurrentHashMap<String, HashSet<String>> secondWordMap;
 	public ConcurrentHashMap<Double, Double> numberOfBigramsWithCount;
-	public int numTrainingBigrams;
+	public long numTrainingBigrams;
 	public final String START = ":S";
 
 	private Bigram() {
@@ -39,11 +39,11 @@ public class Bigram {
 
 	public void updatePerplexity(ConcurrentHashMap<String, HashMap<String, Double>> bigramCounts,
 			ConcurrentHashMap<String, Double> unigramCounts, ConcurrentHashMap<Double, Double> numberOfBigramsWithCount,
-			int totBigrams) {
+			long totBigrams) {
 
 		this.bigramCounts = deepCopy(bigramCounts);
-		this.unigramCounts = anotherDeepCopy(unigramCounts);
-		this.numberOfBigramsWithCount = anotherDeepCopy(numberOfBigramsWithCount);
+		this.unigramCounts = new ConcurrentHashMap<>(unigramCounts);
+		this.numberOfBigramsWithCount = new ConcurrentHashMap<>(numberOfBigramsWithCount);
 		this.numTrainingBigrams = totBigrams;
 
 		makeGoodTuringCounts();
@@ -167,14 +167,6 @@ public class Bigram {
 		ConcurrentHashMap<K1, HashMap<K2, V>> copy = new ConcurrentHashMap<K1, HashMap<K2, V>>();
 		for (Entry<K1, HashMap<K2, V>> entry : original.entrySet()) {
 			copy.put(entry.getKey(), new HashMap<K2, V>(entry.getValue()));
-		}
-		return copy;
-	}
-
-	public <K, V> ConcurrentHashMap<K, V> anotherDeepCopy(ConcurrentHashMap<K, V> original) {
-		ConcurrentHashMap<K, V> copy = new ConcurrentHashMap<K, V>();
-		for (Entry<K, V> entry : original.entrySet()) {
-			copy.put(entry.getKey(), entry.getValue());
 		}
 		return copy;
 	}

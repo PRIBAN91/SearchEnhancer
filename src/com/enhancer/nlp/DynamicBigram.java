@@ -3,7 +3,7 @@ package com.enhancer.nlp;
 import java.util.*;
 import java.util.regex.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class DynamicBigram {
 
@@ -13,7 +13,7 @@ public class DynamicBigram {
 	public ConcurrentHashMap<String, HashMap<String, Double>> bigramCount;
 	public ConcurrentHashMap<String, Double> unigramCount;
 	public ConcurrentHashMap<Double, Double> numberOfBigramsWithCounts;
-	public AtomicInteger totBigrams;
+	public AtomicLong totBigrams;
 	public final String START = ":S";
 
 	private DynamicBigram() {
@@ -28,7 +28,7 @@ public class DynamicBigram {
 		this.bigramCount = new ConcurrentHashMap<>();
 		this.unigramCount = new ConcurrentHashMap<>();
 		this.numberOfBigramsWithCounts = new ConcurrentHashMap<>();
-		this.totBigrams = new AtomicInteger(0);
+		this.totBigrams = new AtomicLong(0);
 
 		for (String sample : samples) {
 			continueTraining(sample);
@@ -37,7 +37,7 @@ public class DynamicBigram {
 
 	public void updatePerplexity() {
 		Bigram bigram = Bigram.getInstance();
-		bigram.updatePerplexity(bigramCount, unigramCount, numberOfBigramsWithCounts, totBigrams.intValue());
+		bigram.updatePerplexity(bigramCount, unigramCount, numberOfBigramsWithCounts, totBigrams.longValue());
 	}
 
 	public synchronized void continueTraining(String searchString) {

@@ -121,7 +121,7 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 			TimerTask anotherTask = new UpdateBigramTask();
 			timer = new Timer();
 			timer.schedule(task, 300000, 1200000);
-			timer.schedule(anotherTask, 60000, 60000);
+			timer.schedule(anotherTask, 600000, 600000);
 			Stopwatch sw = new Stopwatch();
 			Loadlist ls = new Loadlist();
 			TreeSet<Wordlist> ts = ls.loadWordList();

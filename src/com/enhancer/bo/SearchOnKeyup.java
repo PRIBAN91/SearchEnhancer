@@ -31,7 +31,7 @@ public class SearchOnKeyup {
 		return list;
 	}
 
-	public int moreSuggestionNeeded(List<String> list, String sarr[], String str, int len, int needed) {
+	public int moreSuggestionNeeded(List<String> list, String sarr[], String str, int needed) {
 
 		int count = 0;
 		if (needed > 0) {
@@ -113,7 +113,7 @@ public class SearchOnKeyup {
 	public List<String> desperateSearch(Trie trie, List<String> list, String sarr[], String prev, String searchStr,
 			int len, int lim) {
 		System.out.println("Desparate search!");
-		if (prev.equals("") || !searchStr.startsWith(prev) || len <= 4)
+		if (prev.equals("") || !searchStr.startsWith(prev) || len <= 3)
 			list = findUnkownKeywordArr(sarr, searchStr, len, lim);
 		else {
 			String trieWord = determineTrieWord(searchStr);

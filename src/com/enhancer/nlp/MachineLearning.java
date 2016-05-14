@@ -5,7 +5,7 @@ import com.enhancer.model.*;
 
 public class MachineLearning {
 
-	public List<String> calculateMostPrabable(List<String> suggList, String str) {
+	public List<String> calculateMostProbable(List<String> suggList, String str) {
 		Bigram db = Bigram.getInstance();
 		String sarr[] = str.split(" ");
 		String word1 = "";
@@ -42,9 +42,45 @@ public class MachineLearning {
 	}
 
 	// Work-in-progress
-	public List<String> calculateMaxLikeEst(List<String> suggList, String str) {
+	public List<String> calculateMaxLikeEst(List<String> suggList, String str, boolean correctFirstWord) {
 
 		List<String> list = new ArrayList<>(suggList);
+
+		return list;
+
+	}
+
+	public List<String> higherPrecedenceList(List<String> list, String secondWord) {
+		List<String> higherRankList = new ArrayList<>();
+		Iterator<String> it = list.iterator();
+		while (it.hasNext()) {
+			String s = it.next();
+			if (s.contains(secondWord)) {
+				higherRankList.add(s);
+				it.remove();
+			}
+		}
+		return higherRankList;
+	}
+
+	public List<String> checkContains(String sarr[], String str) {
+
+		List<String> list = new ArrayList<>();
+		for (String s : sarr) {
+			if (s.contains(str))
+				list.add(s);
+		}
+		return list;
+	}
+
+	public List<String> checkAnotherContain(String sarr[], List<String> suggList) {
+
+		List<String> list = new ArrayList<>();
+		for (String s : sarr) {
+			for (String w : suggList)
+				if (s.contains(w))
+					list.add(s);
+		}
 		return list;
 
 	}

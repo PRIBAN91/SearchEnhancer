@@ -50,7 +50,7 @@ public class SearchCall extends HttpServlet {
 			int lim = 8, needed = 0, len = searchStr.length();
 			if (len >= 2) {
 				boolean checkContains = true, desparatePrev = false, prevSuggChk = true;
-				boolean spaceEncountered = searchStr.contains(" ");
+				boolean spaceEncountered = searchStr.contains(" "), corrFirstWord = true;
 				if (len == 2) {
 					session.setAttribute("SuggestionList", null);
 					session.setAttribute("PrevSuggListChk", false);
@@ -69,33 +69,37 @@ public class SearchCall extends HttpServlet {
 				list = trie.findCompletions(searchStr);
 				if (!list.isEmpty()) {
 					if (spaceEncountered)
-						list = learn.calculateMostPrabable(list, searchStr);
+						list = learn.calculateMostProbable(list, searchStr);
 					else
 						Collections.sort(list);
-					if (list.size() > lim)
-						list = list.subList(0, lim);
 				} else {
-					prevSuggChk = (Boolean) (session.getAttribute("PrevSuggListChk") != null
-							? session.getAttribute("PrevSuggListChk") : false);
-					list = (List<String>) (session.getAttribute("SuggestionList") != null
-							? session.getAttribute("SuggestionList") : new ArrayList<>());
-					list = luw.checkPrevSuggestion(list, prevSuggChk, searchStr);
+					if (!spaceEncountered) {
+						prevSuggChk = (Boolean) (session.getAttribute("PrevSuggListChk") != null
+								? session.getAttribute("PrevSuggListChk") : false);
+						list = (List<String>) (session.getAttribute("SuggestionList") != null
+								? session.getAttribute("SuggestionList") : new ArrayList<>());
+						list = luw.checkPrevSuggestion(list, prevSuggChk, searchStr);
+						corrFirstWord = false;
+					}
 				}
 				String sarr[] = (String[]) context.getAttribute("ProductArray");
-				needed = lim - list.size();
+				needed = (lim - list.size()) < 0 ? 0 : lim - list.size();
 				if (!spaceEncountered) {
 					if (prev.equals("") || prev.equals(searchStr) || !searchStr.startsWith(prev) || checkContains) {
 						checkContains = true;
-						int count = luw.moreSuggestionNeeded(list, sarr, searchStr, len, needed);
+						int count = luw.moreSuggestionNeeded(list, sarr, searchStr, needed);
 						if (needed > 0 && count == 0)
 							checkContains = false;
 						if ((needed > 0 && count > 0) || checkContains || prev.equals(""))
 							prev = searchStr;
+						if (count > 0)
+							corrFirstWord = true;
 					}
 
 					if (list.isEmpty()) {
 						desparatePrev = true;
 						list = luw.desperateSearch(trie, list, sarr, prev, searchStr, len, lim);
+						corrFirstWord = false;
 					}
 				}
 
@@ -103,20 +107,34 @@ public class SearchCall extends HttpServlet {
 					if (spaceEncountered) {
 						list = (List<String>) (session.getAttribute("SuggestionList") != null
 								? session.getAttribute("SuggestionList") : new ArrayList<>());
-						list = learn.calculateMaxLikeEst(list, searchStr);
+						corrFirstWord = (Boolean) (session.getAttribute("FirstWordCorrect") != null
+								? session.getAttribute("FirstWordCorrect") : false);
+						String words[] = searchStr.split(" ");
+						if (words.length == 1) {
+							if (corrFirstWord)
+								list = learn.checkContains(sarr, words[0]);
+							else {
+								if (list.size() > (lim >> 1))
+									list = list.subList(0, lim >> 1);
+								list = learn.checkAnotherContain(sarr, list);
+							}
+						} else
+							list = learn.calculateMaxLikeEst(list, searchStr, corrFirstWord);
 					}
 				}
 				System.out.println(list);
 				System.out.println("Time elapsed in this search : " + sw.elapsedTime());
-				if (!list.isEmpty())
-					session.setAttribute("SuggestionList", list);
+				session.setAttribute("SuggestionList", list);
 				session.setAttribute("SpacePresent", spaceEncountered);
 				session.setAttribute("PrevSuggListChk", prevSuggChk);
 				session.setAttribute("CheckContains", checkContains);
 				session.setAttribute("PrevSearch", prev);
 				session.setAttribute("DesparateSearch", desparatePrev);
+				session.setAttribute("FirstWordCorrect", corrFirstWord);
 
 				JSONObject obj = new JSONObject();
+				if (list.size() > lim)
+					list = list.subList(0, lim);
 				JSONArray array = new JSONArray(list);
 				try {
 					obj.put("SuggestionList", array);

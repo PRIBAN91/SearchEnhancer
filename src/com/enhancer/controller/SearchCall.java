@@ -50,7 +50,7 @@ public class SearchCall extends HttpServlet {
 			int lim = 8, needed = 0, len = searchStr.length();
 			if (len >= 2) {
 				boolean checkContains = true, desparatePrev = false, prevSuggChk = true;
-				boolean spaceEncountered = searchStr.contains(" "), corrFirstWord = true;
+				boolean spaceEncountered = false, corrFirstWord = true;
 				if (len == 2) {
 					session.setAttribute("SuggestionList", null);
 					session.setAttribute("PrevSuggListChk", false);
@@ -64,6 +64,7 @@ public class SearchCall extends HttpServlet {
 				Stopwatch sw = new Stopwatch();
 				List<String> list = new ArrayList<>();
 				searchStr = searchStr.trim().toLowerCase();
+				spaceEncountered = searchStr.contains(" ");
 				System.out.println("Search string : " + searchStr);
 				Trie trie = (Trie) context.getAttribute("Products");
 				list = trie.findCompletions(searchStr);
@@ -103,21 +104,17 @@ public class SearchCall extends HttpServlet {
 					}
 				}
 
-				if (list.isEmpty()) {
-					if (spaceEncountered) {
+				if (spaceEncountered) {
+					if (list.isEmpty()) {
 						list = (List<String>) (session.getAttribute("SuggestionList") != null
 								? session.getAttribute("SuggestionList") : new ArrayList<>());
 						corrFirstWord = (Boolean) (session.getAttribute("FirstWordCorrect") != null
 								? session.getAttribute("FirstWordCorrect") : false);
-						String words[] = searchStr.split(" ");
-						if (words.length == 1) {
-							if (corrFirstWord)
-								list = learn.checkContains(sarr, words[0]);
-							else {
-								if (list.size() > (lim >> 1))
-									list = list.subList(0, lim >> 1);
-								list = learn.checkAnotherContain(sarr, list);
-							}
+						if (!corrFirstWord) {
+							if (list.size() > (lim >> 1))
+								list = list.subList(0, lim >> 1);
+							list = learn.checkAnotherContain(sarr, list, 240);
+							corrFirstWord = true;
 						} else
 							list = learn.calculateMaxLikeEst(list, searchStr, corrFirstWord);
 					}

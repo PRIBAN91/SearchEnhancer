@@ -8,7 +8,6 @@ import com.enhancer.nlp.*;
 public class SearchOnEnter {
 
 	public List<String> findKeywordSuggestion(List<String> list, String str, int len, int lim) {
-
 		SpellAutoCorrect luw = new SpellAutoCorrect();
 		TreeSet<Correctspell> ts = luw.calculateEditDistance(list, str, len);
 		int count = 0;
@@ -22,12 +21,10 @@ public class SearchOnEnter {
 		return list;
 	}
 
-	public List<String> findUnkownKeyword(String arr[], String str, int len, int lim) {
-
+	public List<String> findUnkownKeyword(List<String> list, String arr[], String str, int len, int lim) {
 		SpellAutoCorrect luw = new SpellAutoCorrect();
-		TreeSet<Correctspell> ts = luw.calculateEditDistanceArr(arr, str, len, lim >> 1, 1440);
+		TreeSet<Correctspell> ts = luw.calculateEditDistanceArr(arr, str, len, lim >> 1, 720);
 		int count = 0;
-		List<String> list = new ArrayList<String>();
 		for (Correctspell csp : ts) {
 			list.add(csp.getS());
 			count++;
@@ -44,6 +41,13 @@ public class SearchOnEnter {
 			DynamicTrigram dt = DynamicTrigram.getInstance();
 			dt.continueTraining(str.split(" "));
 		}
+	}
+
+	public boolean isSpacePresentInSugg(List<String> list) {
+		for (String s : list)
+			if (s.contains(" "))
+				return true;
+		return false;
 	}
 
 }

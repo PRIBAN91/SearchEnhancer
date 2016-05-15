@@ -1,7 +1,6 @@
 package com.enhancer.bo;
 
 import java.util.*;
-import com.enhancer.model.CorrectSpelling;
 import com.enhancer.model.Correctspell;
 import com.enhancer.nlp.Calculations;
 import com.enhancer.nlp.SpellAutoCorrect;
@@ -22,7 +21,6 @@ public class SearchOnKeyup {
 	}
 
 	public List<String> oldSuggestion(List<String> list, String str, int len) {
-
 		SpellAutoCorrect luw = new SpellAutoCorrect();
 		TreeSet<Correctspell> ts = luw.calculateEditDistance(list, str, len);
 		list = new ArrayList<String>();
@@ -32,7 +30,6 @@ public class SearchOnKeyup {
 	}
 
 	public int moreSuggestionNeeded(List<String> list, String sarr[], String str, int needed) {
-
 		int count = 0;
 		if (needed > 0) {
 			HashSet<String> hs = new HashSet<>(list);
@@ -52,24 +49,7 @@ public class SearchOnKeyup {
 		return count;
 	}
 
-	public List<String> findUnkownKeywordWeighted(List<String> list, String str, int len, int lim) {
-
-		SpellAutoCorrect luw = new SpellAutoCorrect();
-		int count = 0;
-		TreeSet<CorrectSpelling> ts = luw.calculateWeightedEditDist(list, str, len, lim >> 2, 3000);
-		list = new ArrayList<>();
-		for (CorrectSpelling csp : ts) {
-			list.add(csp.getStr());
-			count++;
-			if (count == lim) {
-				break;
-			}
-		}
-		return list;
-	}
-
 	public List<String> findUnkownKeywordArr(String sarr[], String str, int len, int lim) {
-
 		SpellAutoCorrect luw = new SpellAutoCorrect();
 		int count = 0;
 		TreeSet<Correctspell> ts = luw.calculateEditDistanceArr(sarr, str, len, lim >> 2, 240);
@@ -85,7 +65,6 @@ public class SearchOnKeyup {
 	}
 
 	public List<String> findUnkownKeyword(List<String> list, String str, int len, int lim) {
-
 		SpellAutoCorrect luw = new SpellAutoCorrect();
 		int count = 0;
 		TreeSet<Correctspell> ts = luw.calculateEditDistanceDam(list, str, len, lim, 200);
@@ -101,12 +80,10 @@ public class SearchOnKeyup {
 	}
 
 	public String determineTrieWord(String str) {
-
 		Calculations calc = new Calculations();
 		double compatibilityScore = calc.addProbability(str.charAt(0) - 96, str.charAt(1) - 96);
 		if (compatibilityScore > 0.2)
 			return str.substring(0, 2);
-
 		return str.substring(0, 1);
 	}
 

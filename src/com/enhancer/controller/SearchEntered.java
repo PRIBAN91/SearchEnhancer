@@ -47,11 +47,12 @@ public class SearchEntered extends HttpServlet {
 		List<String> list = new ArrayList<>();
 		List<String> lst = new ArrayList<>();
 		String searchStr = request.getParameter("searchString");
+		int lim = 6, needed = 0;
 		if (searchStr != null) {
 			searchStr = searchStr.toLowerCase().trim();
 			HashSet<String> categorySet = (HashSet<String>) context.getAttribute("Categories");
-			int lim = 6, len = searchStr.length();
-			boolean emptySugg = false;
+			int len = searchStr.length();
+			boolean spacePresentInSugg = false;
 			System.out.println("In enter, Search String  : " + searchStr);
 			searchStr = searchStr.toLowerCase();
 			SearchOnEnter luw = new SearchOnEnter();
@@ -62,36 +63,37 @@ public class SearchEntered extends HttpServlet {
 				luw.updateNgrams(searchStr);
 			} else {
 				String arr[] = (String[]) context.getAttribute("ProductArray");
-				boolean spacePresent = false;
-				boolean desparateLast = (Boolean) session.getAttribute("DesparateSearch");
-				spacePresent = (Boolean) session.getAttribute("SpacePresent");
+				boolean spacePresent = (Boolean) session.getAttribute("SpacePresent");
 				lst = (List<String>) session.getAttribute("SuggestionList");
-				emptySugg = (Boolean) session.getAttribute("PrevSuggListChk");
-				if ((!lst.isEmpty() && !emptySugg) || desparateLast) {
-					if (spacePresent) {
-						System.out.println("In word break.");
-						WordBreak wb = new WordBreak();
-						list = wb.wordBreakUtil(lst, searchStr);
-					}
-					if (list.isEmpty()) {
-						System.out.println("In previous suggestion for enter.");
-						list = luw.findKeywordSuggestion(lst, searchStr, len, lim);
+				if (!lst.isEmpty()) {
+					if (spacePresent)
+						list = lst;
+					else {
+						spacePresentInSugg = luw.isSpacePresentInSugg(list);
+						if (spacePresentInSugg) {
+							System.out.println("In word break.");
+							WordBreak wb = new WordBreak();
+							list = wb.wordBreakUtil(list, searchStr);
+						} else {
+							System.out.println("In previous suggestion for enter.");
+							list = luw.findKeywordSuggestion(lst, searchStr, len, lim);
+						}
 					}
 				}
-				lim -= list.size();
-				System.out.println("Needed in enter : " + lim);
-				if (lim > 0) {
+				needed = (lim - list.size()) < 0 ? 0 : lim - list.size();
+				System.out.println("Needed in enter : " + needed);
+				if (needed > 0) {
 					System.out.println("In completely unknown keyword!");
-					list = luw.findUnkownKeyword(arr, searchStr, len, lim);
+					list = luw.findUnkownKeyword(list, arr, searchStr, len, lim);
 				}
 			}
 
-			if (list.isEmpty())
-				list = lst;
 			System.out.println("List : " + list);
 			System.out.println("Elapsed time in Enter : " + sw.elapsedTime());
 		}
 		JSONObject obj = new JSONObject();
+		if (list.size() > lim)
+			list = list.subList(0, lim);
 		JSONArray array = new JSONArray(list);
 		try {
 			obj.put("SearchedList", array);

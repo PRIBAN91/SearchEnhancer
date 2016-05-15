@@ -43,14 +43,12 @@ public class MachineLearning {
 
 	// Work-in-progress
 	public List<String> calculateMaxLikeEst(List<String> suggList, String str, boolean correctFirstWord) {
-
-		List<String> list = new ArrayList<>(suggList);
-
+		List<String> list = calculateMostProbable(suggList, str);
 		return list;
-
 	}
 
 	public List<String> higherPrecedenceList(List<String> list, String secondWord) {
+		list = splitWordsForPrecedence(list);
 		List<String> higherRankList = new ArrayList<>();
 		Iterator<String> it = list.iterator();
 		while (it.hasNext()) {
@@ -63,26 +61,41 @@ public class MachineLearning {
 		return higherRankList;
 	}
 
-	public List<String> checkContains(String sarr[], String str) {
-
-		List<String> list = new ArrayList<>();
-		for (String s : sarr) {
-			if (s.contains(str))
-				list.add(s);
+	public List<String> splitWordsForPrecedence(List<String> list) {
+		List<String> splitList = new ArrayList<>();
+		for (String s : list) {
+			splitList.addAll(Arrays.asList(s.split(" ")));
 		}
 		return list;
 	}
 
-	public List<String> checkAnotherContain(String sarr[], List<String> suggList) {
-
+	public List<String> checkAnotherContain(String sarr[], List<String> suggList, long runningTime) {
 		List<String> list = new ArrayList<>();
+		long start = System.currentTimeMillis();
+		long end = start + runningTime;
 		for (String s : sarr) {
+			if (System.currentTimeMillis() >= end)
+				break;
 			for (String w : suggList)
 				if (s.contains(w))
 					list.add(s);
 		}
 		return list;
+	}
 
+	public List<String> findUnkownKeywordWeighted(List<String> list, String str, int len, int lim) {
+		SpellAutoCorrect luw = new SpellAutoCorrect();
+		int count = 0;
+		TreeSet<CorrectSpelling> ts = luw.calculateWeightedEditDist(list, str, len, lim >> 2, 240);
+		list = new ArrayList<>();
+		for (CorrectSpelling csp : ts) {
+			list.add(csp.getStr());
+			count++;
+			if (count == lim) {
+				break;
+			}
+		}
+		return list;
 	}
 
 }

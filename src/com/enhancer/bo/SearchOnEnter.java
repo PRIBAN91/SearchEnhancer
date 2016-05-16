@@ -23,7 +23,7 @@ public class SearchOnEnter {
 
 	public List<String> findUnkownKeyword(List<String> list, String arr[], String str, int len, int lim) {
 		SpellAutoCorrect luw = new SpellAutoCorrect();
-		TreeSet<Correctspell> ts = luw.calculateEditDistanceArr(arr, str, len, lim >> 1, 720);
+		TreeSet<Correctspell> ts = luw.calculateEditDistanceArr(arr, str, len, lim >> 1, 1200);
 		int count = 0;
 		for (Correctspell csp : ts) {
 			list.add(csp.getS());

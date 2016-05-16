@@ -69,11 +69,12 @@ public class SearchEntered extends HttpServlet {
 					if (spacePresent)
 						list = lst;
 					else {
-						spacePresentInSugg = luw.isSpacePresentInSugg(list);
+						spacePresentInSugg = luw.isSpacePresentInSugg(lst);
 						if (spacePresentInSugg) {
 							System.out.println("In word break.");
 							WordBreak wb = new WordBreak();
-							list = wb.wordBreakUtil(list, searchStr);
+							list = wb.wordBreakUtil(lst, searchStr);
+							luw.updateNgrams(list.get(0));
 						} else {
 							System.out.println("In previous suggestion for enter.");
 							list = luw.findKeywordSuggestion(lst, searchStr, len, lim);

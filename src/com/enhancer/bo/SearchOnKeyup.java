@@ -6,6 +6,10 @@ import com.enhancer.nlp.Calculations;
 import com.enhancer.nlp.SpellAutoCorrect;
 import com.enhancer.util.Trie;
 
+/**
+ * @author PRITAM. Created for internal logic of each key press event.
+ *
+ */
 public class SearchOnKeyup {
 
 	public List<String> checkPrevSuggestion(List<String> list, boolean prevSuggChk, String searchStr) {

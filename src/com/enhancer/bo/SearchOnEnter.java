@@ -5,6 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.enhancer.model.Correctspell;
 import com.enhancer.nlp.*;
 
+/**
+ * @author PRITAM. Created for internal logic of Enter press event.
+ *
+ */
 public class SearchOnEnter {
 
 	public List<String> findKeywordSuggestion(List<String> list, String str, int len, int lim) {

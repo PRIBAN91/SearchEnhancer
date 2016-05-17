@@ -45,7 +45,6 @@ public class Bigram {
 		this.unigramCounts = new ConcurrentHashMap<>(unigramCounts);
 		this.numberOfBigramsWithCount = new ConcurrentHashMap<>(numberOfBigramsWithCount);
 		this.numTrainingBigrams = totBigrams;
-
 		makeGoodTuringCounts();
 		System.out.println("Updating Good Turing count for Bigrams at : " + new Date());
 	}

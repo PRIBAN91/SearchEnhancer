@@ -18,7 +18,7 @@ import org.json.*;
 /**
  * Servlet implementation class SearchCall
  */
-@WebServlet(description = "This would be called on each key press in Search Bar", urlPatterns = { "/SearchCall" })
+@WebServlet(description = "This can be called on each key press or key up in Search", urlPatterns = { "/SearchCall" })
 public class SearchCall extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -33,14 +33,16 @@ public class SearchCall extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 *      response) This method can be called on jquery keyUp function. Check
+	 *      index.jsp for more details on consuming the service. It takes HTTP
+	 *      Request and HTTP Response of Web Server as parameters.
 	 */
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		// JSON is chosen for a JSON array response type, as it is fast and
-		// universally acclaimed
+		// universally acclaimed. JSON array name is 'SuggestionList'
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		ServletContext context = request.getServletContext();

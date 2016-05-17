@@ -85,7 +85,7 @@ public class SearchEntered extends HttpServlet {
 				System.out.println("Needed in enter : " + needed);
 				if (needed > 0) {
 					System.out.println("In completely unknown keyword!");
-					list = luw.findUnkownKeyword(list, arr, searchStr, len, lim);
+					luw.findUnkownKeyword(list, arr, searchStr, len, lim);
 				}
 			}
 

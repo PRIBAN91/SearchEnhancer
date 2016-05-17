@@ -54,7 +54,7 @@ public class SearchCall extends HttpServlet {
 			int lim = 8, needed = 0, len = searchStr.length();
 			// Check if String length is greater than or equal to 2
 			if (len >= 2) {
-				boolean checkContains = true, desparatePrev = false, prevSuggChk = true;
+				boolean checkContains = true, prevSuggChk = true;
 				boolean spaceEncountered = false, corrFirstWord = true;
 				// Set few session variables to default values
 				if (len == 2) {
@@ -122,7 +122,6 @@ public class SearchCall extends HttpServlet {
 					// If the list is empty after all above logic, call for
 					// desperate search
 					if (list.isEmpty()) {
-						desparatePrev = true;
 						list = luw.desperateSearch(trie, list, sarr, prev, searchStr, len, lim);
 						corrFirstWord = false;
 					}
@@ -146,12 +145,12 @@ public class SearchCall extends HttpServlet {
 				}
 				System.out.println(list);
 				System.out.println("Time elapsed in this search : " + sw.elapsedTime());
+				// Setting the session attributes for the next key stroke
 				session.setAttribute("SuggestionList", list);
 				session.setAttribute("SpacePresent", spaceEncountered);
 				session.setAttribute("PrevSuggListChk", prevSuggChk);
 				session.setAttribute("CheckContains", checkContains);
 				session.setAttribute("PrevSearch", prev);
-				session.setAttribute("DesparateSearch", desparatePrev);
 				session.setAttribute("FirstWordCorrect", corrFirstWord);
 
 				// Put the needed list as JSON array

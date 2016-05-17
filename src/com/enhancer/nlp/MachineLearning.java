@@ -43,30 +43,46 @@ public class MachineLearning {
 
 	// Work-in-progress
 	public List<String> calculateMaxLikeEst(List<String> suggList, String str, boolean correctFirstWord) {
-		List<String> list = calculateMostProbable(suggList, str);
+		List<String> list = higherPrecedenceList(suggList, str);
 		return list;
 	}
 
-	public List<String> higherPrecedenceList(List<String> list, String secondWord) {
-		list = splitWordsForPrecedence(list);
-		List<String> higherRankList = new ArrayList<>();
-		Iterator<String> it = list.iterator();
-		while (it.hasNext()) {
-			String s = it.next();
-			if (s.contains(secondWord)) {
-				higherRankList.add(s);
-				it.remove();
+	public List<String> higherPrecedenceList(List<String> suggList, String str) {
+		Bigram db = Bigram.getInstance();
+		String sarr[] = str.split(" ");
+		String lastWord = sarr[sarr.length - 1];
+		List<String> list = new ArrayList<>();
+		List<BigramWord> wordList = new ArrayList<>();
+		for (String s : suggList) {
+			double factor = db.perplexity(s);
+			factor += findEditWeight(s.split(" "), lastWord);
+			wordList.add(new BigramWord(s, factor));
+		}
+		Collections.sort(wordList);
+		for (BigramWord wrd : wordList)
+			list.add(wrd.toString());
+
+		return list;
+	}
+
+	public double findEditWeight(String words[], String lastWord) {
+		SpellAutoCorrect luw = new SpellAutoCorrect();
+		Calculations calc = new Calculations();
+		int len = lastWord.length(), startWithCount = 1;
+		double result = len;
+		int maxEdist = calc.determineMaxEdist(len);
+		for (String word : words) {
+			if (word.startsWith(lastWord))
+				startWithCount++;
+			if (Math.abs(word.length() - len) <= maxEdist) {
+				double res = luw.getWeightedLevenshtein(lastWord, word);
+				if (res <= maxEdist) {
+					result = Math.min(result, res);
+				}
 			}
 		}
-		return higherRankList;
-	}
-
-	public List<String> splitWordsForPrecedence(List<String> list) {
-		List<String> splitList = new ArrayList<>();
-		for (String s : list) {
-			splitList.addAll(Arrays.asList(s.split(" ")));
-		}
-		return list;
+		result /= startWithCount;
+		return result;
 	}
 
 	public List<String> checkAnotherContain(String sarr[], List<String> suggList, long runningTime) {
@@ -79,21 +95,6 @@ public class MachineLearning {
 			for (String w : suggList)
 				if (s.contains(w))
 					list.add(s);
-		}
-		return list;
-	}
-
-	public List<String> findUnkownKeywordWeighted(List<String> list, String str, int len, int lim) {
-		SpellAutoCorrect luw = new SpellAutoCorrect();
-		int count = 0;
-		TreeSet<CorrectSpelling> ts = luw.calculateWeightedEditDist(list, str, len, lim >> 2, 240);
-		list = new ArrayList<>();
-		for (CorrectSpelling csp : ts) {
-			list.add(csp.getStr());
-			count++;
-			if (count == lim) {
-				break;
-			}
 		}
 		return list;
 	}

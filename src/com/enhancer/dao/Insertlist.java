@@ -1,7 +1,6 @@
 package com.enhancer.dao;
 
 import java.util.ArrayList;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import com.enhancer.model.Wordlist;
@@ -35,5 +34,13 @@ public class Insertlist {
 		tx.commit();
 		session.close();
 		System.out.println("After successful transaction!");
+	}
+
+	// For demo purpose. Run this java file for bulk insert of data in table.
+	public static void main(String[] args) {
+
+		Insertlist il = new Insertlist();
+		il.insertWordList();
+
 	}
 }

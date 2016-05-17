@@ -1,8 +1,6 @@
 package com.enhancer.nlp;
 
 import java.util.*;
-
-import com.enhancer.model.CorrectSpelling;
 import com.enhancer.model.Correctspell;
 
 public class SpellAutoCorrect {
@@ -10,7 +8,6 @@ public class SpellAutoCorrect {
 	private final int deleteCost = 1, insertCost = 1, replaceCost = 1, swapCost = 1;
 
 	public TreeSet<Correctspell> calculateEditDistance(List<String> list, String str, int len) {
-
 		Calculations calc = new Calculations();
 		int maxEdist = calc.determineMaxEdist(len);
 		TreeSet<Correctspell> ts = new TreeSet<>();
@@ -28,7 +25,6 @@ public class SpellAutoCorrect {
 
 	public TreeSet<Correctspell> calculateEditDistanceDam(List<String> list, String str, int len, int lim,
 			long runningTime) {
-
 		TreeSet<Correctspell> ts = new TreeSet<>();
 		Calculations calc = new Calculations();
 		int maxEdist = calc.determineMaxEdist(len);
@@ -80,69 +76,32 @@ public class SpellAutoCorrect {
 		return ts;
 	}
 
-	public TreeSet<CorrectSpelling> calculateWeightedEditDist(List<String> list, String str, int len, int lim,
-			long runningTime) {
-
-		TreeSet<CorrectSpelling> ts = new TreeSet<>();
-		Calculations calc = new Calculations();
-		int maxEdist = calc.determineMaxEdist(len), smallCnt = 0;
-		double minEdist = maxEdist >> 1;
-		long start = System.currentTimeMillis();
-		long end = start + runningTime;
-		for (String s : list) {
-			if (System.currentTimeMillis() >= end)
-				break;
-			if (Math.abs(s.length() - len) <= maxEdist) {
-				double res = getWeightedLevenshtein(str, s);
-				if (res <= maxEdist) {
-					if (res <= minEdist)
-						smallCnt++;
-					ts.add(new CorrectSpelling(s, res));
-					// System.out.println(s);
-					if (smallCnt == lim)
-						break;
-				}
-			}
-		}
-		return ts;
-	}
-
 	public int getDamerauLevenshteinDistance(String source, String target) {
-
 		char src[] = source.toCharArray();
 		char trgt[] = target.toCharArray();
-
 		int m = src.length;
 		int n = trgt.length;
-
 		if (m == 0)
 			return m * insertCost;
-
 		if (n == 0)
 			return n * deleteCost;
-
 		int[][] table = new int[m][n];
 		Map<Character, Integer> sourceIndexByCharacter = new HashMap<Character, Integer>();
-
 		if (src[0] != trgt[0])
 			table[0][0] = Math.min(replaceCost, deleteCost + insertCost);
-
 		sourceIndexByCharacter.put(src[0], 0);
-
 		for (int i = 1; i < m; i++) {
 			int deleteDistance = table[i - 1][0] + deleteCost;
 			int insertDistance = (i + 1) * deleteCost + insertCost;
 			int matchDistance = i * deleteCost + (src[i] == trgt[0] ? 0 : replaceCost);
 			table[i][0] = Math.min(Math.min(deleteDistance, insertDistance), matchDistance);
 		}
-
 		for (int j = 1; j < n; j++) {
 			int deleteDistance = (j + 1) * insertCost + deleteCost;
 			int insertDistance = table[0][j - 1] + insertCost;
 			int matchDistance = j * insertCost + (src[0] == trgt[j] ? 0 : replaceCost);
 			table[0][j] = Math.min(Math.min(deleteDistance, insertDistance), matchDistance);
 		}
-
 		for (int i = 1; i < m; i++) {
 			int maxSourceLetterMatchIndex = src[i] == trgt[0] ? 0 : -1;
 			for (int j = 1; j < n; j++) {
@@ -194,22 +153,22 @@ public class SpellAutoCorrect {
 		return arr[len1][len2];
 	}
 
-	public static double getWeightedLevenshtein(String str1, String str2) {
+	public double getWeightedLevenshtein(String source, String target) {
 		Calculations calc = new Calculations();
 		double delCost = 0, addCost = 0, repCost;
-		int len1 = str1.length();
-		int len2 = str2.length();
+		int len1 = source.length();
+		int len2 = target.length();
 		double[][] arr = new double[len1 + 1][len2 + 1];
 
 		for (int i = 1; i <= len1; i++) {
 			if (i > 1)
-				addCost = calc.addScore(((int) (str1.charAt(i - 1) - 96)), ((int) (str1.charAt(i - 2) - 96)));
+				addCost = calc.addScore(((int) (source.charAt(i - 1) - 96)), ((int) (source.charAt(i - 2) - 96)));
 			arr[i][0] = i + addCost;
 		}
 
 		for (int i = 1; i <= len2; i++) {
 			if (i > 1)
-				delCost = calc.delScore(((int) (str2.charAt(i - 1) - 96)), ((int) (str2.charAt(i - 2) - 96)));
+				delCost = calc.delScore(((int) (target.charAt(i - 1) - 96)), ((int) (target.charAt(i - 2) - 96)));
 			arr[0][i] = i + delCost;
 		}
 
@@ -217,14 +176,14 @@ public class SpellAutoCorrect {
 			for (int j = 1; j <= len2; j++) {
 				delCost = 0;
 				addCost = 0;
-				repCost = calc.subScore(((int) (str1.charAt(i - 1) - 96)), ((int) (str2.charAt(j - 1) - 96)));
-				double m = (str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0 : 1 + repCost;
+				repCost = calc.subScore(((int) (source.charAt(i - 1) - 96)), ((int) (target.charAt(j - 1) - 96)));
+				double m = (source.charAt(i - 1) == target.charAt(j - 1)) ? 0 : 1 + repCost;
 
 				if (i > 1)
-					delCost = calc.delScore(((int) (str1.charAt(i - 2) - 96)), ((int) (str1.charAt(i - 1) - 96)));
+					delCost = calc.delScore(((int) (source.charAt(i - 2) - 96)), ((int) (source.charAt(i - 1) - 96)));
 
 				if (j > 1)
-					addCost = calc.addScore(((int) (str2.charAt(j - 2) - 96)), ((int) (str2.charAt(j - 1) - 96)));
+					addCost = calc.addScore(((int) (target.charAt(j - 2) - 96)), ((int) (target.charAt(j - 1) - 96)));
 
 				arr[i][j] = Math.min(Math.min(arr[i - 1][j] + 1 + delCost, arr[i][j - 1] + 1 + addCost),
 						arr[i - 1][j - 1] + m);

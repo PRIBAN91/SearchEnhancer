@@ -108,30 +108,49 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 
 	/**
 	 * @see ServletContextListener#contextInitialized(ServletContextEvent)
+	 * 
+	 *      This is where the processing starts. This is loaded during server
+	 *      startup. It can throw OutOfMemory Error under Throwable. This means
+	 *      that you have to increase Tomcat heap size.
+	 * 
 	 */
 	public void contextInitialized(ServletContextEvent arg0) {
-
 		System.out.println("Hi there, just getting started up. This may take some time!");
 		try {
 			HibernateUtil.buildSessionFactory();
 			System.out.println("Before loading list");
 			ServletContext context = arg0.getServletContext();
-			// Initializing TimerTask to fetch from DB after every 10 minutes
+			// Initializing TimerTask to fetch from DB after every 30 minutes
+			// starting at approximately 25 minutes after server startup
 			TimerTask task = new DbFetchTask(context);
+			// Initializing TimerTask to update Bigram with latest frequency
+			// after every 10 minutes starting at approximately 10 minutes after
+			// server startup
 			TimerTask anotherTask = new UpdateBigramTask();
+			// Schedule both the timers
 			timer = new Timer();
 			timer.schedule(task, 300000, 1200000);
 			timer.schedule(anotherTask, 600000, 600000);
 			Stopwatch sw = new Stopwatch();
+			// Load the list from DB
 			Loadlist ls = new Loadlist();
 			TreeSet<Wordlist> ts = ls.loadWordList();
 			int sz = ts.size(), step = 0;
 			System.out.println("After loading list");
+			// A Trie (advanced data structure) is loaded with the list of
+			// products available. If in the less probable case of Tomcat heap
+			// memory overflow, increase Tomcat heap memory or do not use Trie
+			// at application level. Instead you can create Trie with initial
+			// key stroke of an user and fetching all record from the table
+			// using database fetch query. Eventually you can store the small
+			// Trie in session.
 			Trie trie = new Trie();
 			String arr[] = new String[sz];
 			HashSet<String> hs = new HashSet<>();
 			HashSet<String> trigramSet = new HashSet<>();
 			System.out.println("Putting it in Trie");
+			// Put each word in the list fetched from database table in a Trie,
+			// Hashset, String array and a special training set for Trigram
 			for (Wordlist wl : ts) {
 				String s = wl.getWords();
 				trie.addWord(s);
@@ -140,24 +159,30 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 				if (StringUtils.countMatches(s, " ") >= 2)
 					trigramSet.add(s);
 			}
+			// Initialize Bigram training with initial training set
 			Bigram bigram = Bigram.getInstance();
 			bigram.initializeTraining(hs);
+			// Initialize Tigram training with a Trigram training set f
 			DynamicTrigram dt = DynamicTrigram.getInstance();
 			dt.initializeTraining(trigramSet);
+			// Initialize Dynamic Bigram training with initial training set same
+			// as Bigram
 			DynamicBigram db = DynamicBigram.getInstance();
 			db.initializeTraining(hs);
 			double time = sw.elapsedTime();
 			System.out.println("Elapsed time : " + time);
+			// Put the Trie, Set and Array in the servlet/application context
 			context.setAttribute("Products", trie);
 			context.setAttribute("ProductArray", arr);
 			context.setAttribute("Categories", hs);
 			System.out.println("Products got loaded successfully during StartUp!");
 		} catch (Throwable t) {
 			if (t != null && t instanceof OutOfMemoryError) {
-				System.out.println(
-						"Too many products! Please contact tech team for more information! Server startup failed. Terminating program."
-								+ " Please increase your Virtual Machine(VM) space in Apache Tomcat for successful continuation! ");
-				System.exit(0);
+				System.out.println("Too many products! Please contact tech team for more "
+						+ "information! Server startup failed. Terminating program."
+						+ " Please increase your Virtual Machine(VM) space in Apache"
+						+ " Tomcat for successful continuation! ");
+				System.exit(1);
 			} else {
 				System.out.println("Unexpected exception : ");
 				t.printStackTrace();
@@ -231,6 +256,10 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 
 	/**
 	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
+	 * 
+	 *      This is called when the server shuts down either normally or
+	 *      abnormally. This method is used to cancel the timer and shutdown the
+	 *      Hibernate session factory.
 	 */
 	public void contextDestroyed(ServletContextEvent arg0) {
 		timer.cancel();

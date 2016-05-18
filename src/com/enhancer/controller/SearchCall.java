@@ -90,8 +90,11 @@ public class SearchCall extends HttpServlet {
 					if (spaceEncountered)
 						list = learn.calculateMostProbable(list, searchStr);
 					// If single word, sort the list
-					else
+					else {
 						Collections.sort(list);
+						if (list.size() > lim)
+							list = list.subList(0, lim);
+					}
 				} else {
 					// If no word is starting with the present searched string,
 					// check the previous suggestion for Damerau-Lavenstein

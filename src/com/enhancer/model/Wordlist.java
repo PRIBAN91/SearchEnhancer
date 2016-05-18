@@ -4,6 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * @author PRITAM. Created for Hibernate ORM mapping with table. You can change
+ *         the table and column name here according to your wish.
+ *
+ */
 @Entity
 @Table(name = "wordlist")
 public class Wordlist implements Comparable<Wordlist> {

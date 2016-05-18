@@ -1,9 +1,14 @@
 package com.enhancer.model;
 
+/**
+ * @author PRITAM. Created for Storing Bigram words in a list along with their
+ *         perplexity score sorted in natural order.
+ *
+ */
 public class BigramWord implements Comparable<BigramWord> {
 
-	String word;
-	Double prob;
+	private String word;
+	private Double prob;
 
 	public BigramWord(String word, double prob) {
 		this.word = word;

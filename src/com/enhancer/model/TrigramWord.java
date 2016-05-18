@@ -1,9 +1,14 @@
 package com.enhancer.model;
 
+/**
+ * @author PRITAM. Created for Storing Trigram words in a list along with their
+ *         probability score sorted in descending order.
+ *
+ */
 public class TrigramWord implements Comparable<TrigramWord> {
 
-	String word;
-	Double prob;
+	private String word;
+	private Double prob;
 
 	public TrigramWord(String word, double prob) {
 		this.word = word;

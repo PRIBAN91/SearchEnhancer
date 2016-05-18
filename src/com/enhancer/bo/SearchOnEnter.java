@@ -27,7 +27,7 @@ public class SearchOnEnter {
 	 */
 	public List<String> findKeywordSuggestion(List<String> list, String str, int len, int lim) {
 		SpellAutoCorrect luw = new SpellAutoCorrect();
-		// Calculate the unweighted Edit Distance
+		// Calculate the Edit Distance
 		TreeSet<Correctspell> ts = luw.calculateEditDistance(list, str, len);
 		int count = 0;
 		list = new ArrayList<String>();

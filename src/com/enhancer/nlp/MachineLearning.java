@@ -26,7 +26,6 @@ public class MachineLearning {
 	}
 
 	public List<String> switchToTrigrams(List<String> suggList, String word1) {
-
 		DynamicTrigram dt = DynamicTrigram.getInstance();
 		List<TrigramWord> wordList = new ArrayList<>();
 		for (String s : suggList) {
@@ -49,31 +48,32 @@ public class MachineLearning {
 
 	public List<String> higherPrecedenceList(List<String> suggList, String str) {
 		Bigram db = Bigram.getInstance();
-		String sarr[] = str.split(" ");
-		String lastWord = sarr[sarr.length - 1];
 		List<String> list = new ArrayList<>();
 		List<BigramWord> wordList = new ArrayList<>();
 		for (String s : suggList) {
 			double factor = db.perplexity(s);
-			factor += findEditWeight(s.split(" "), lastWord);
+			factor += findEditWeight(s.split(" "), str);
 			wordList.add(new BigramWord(s, factor));
 		}
 		Collections.sort(wordList);
 		for (BigramWord wrd : wordList)
 			list.add(wrd.toString());
-
 		return list;
 	}
 
-	public double findEditWeight(String words[], String lastWord) {
+	public double findEditWeight(String words[], String searchStr) {
 		SpellAutoCorrect luw = new SpellAutoCorrect();
 		Calculations calc = new Calculations();
-		int len = lastWord.length(), startWithCount = 1;
+		String arr[] = searchStr.split(" ");
+		String lastWord = arr[arr.length - 1];
+		int len = lastWord.length(), normFactor = 1;
 		double result = len;
 		int maxEdist = calc.determineMaxEdist(len);
 		for (String word : words) {
 			if (word.startsWith(lastWord))
-				startWithCount++;
+				normFactor++;
+			if (searchStr.contains(word))
+				normFactor++;
 			if (Math.abs(word.length() - len) <= maxEdist) {
 				double res = luw.getWeightedLevenshtein(lastWord, word);
 				if (res <= maxEdist) {
@@ -81,7 +81,7 @@ public class MachineLearning {
 				}
 			}
 		}
-		result /= startWithCount;
+		result /= normFactor;
 		return result;
 	}
 

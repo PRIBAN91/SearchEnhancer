@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author PRITAM. Created as a singleton class for keeping it in server memory.
- *         This class is for Trigram modeling. Same as Bigram Modeling, but
- *         without Good Turing smoothing.
+ *         This class is for simple Trigram modeling. Same as Bigram Modeling,
+ *         but without Good Turing smoothing.
  *
  */
 public class DynamicTrigram {

@@ -116,7 +116,7 @@ public class DynamicBigram {
 			// Increment the number of bigrams with the new count for
 			// gt-smoothing
 			if (!numberOfBigramsWithCounts.containsKey(count + 1.0)) {
-				numberOfBigramsWithCounts.put(count + 1.0, 1.0);
+				numberOfBigramsWithCounts.putIfAbsent(count + 1.0, 1.0);
 			} else {
 				numberOfBigramsWithCounts.put(count + 1.0, numberOfBigramsWithCounts.get(count + 1.0) + 1.0);
 			}

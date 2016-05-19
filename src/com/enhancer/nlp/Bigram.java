@@ -135,7 +135,7 @@ public class Bigram {
 			// Increment the number of bigrams with the new count for
 			// gt-smoothing
 			if (!numberOfBigramsWithCount.containsKey(count + 1.0)) {
-				numberOfBigramsWithCount.put(count + 1.0, 1.0);
+				numberOfBigramsWithCount.putIfAbsent(count + 1.0, 1.0);
 			} else {
 				numberOfBigramsWithCount.put(count + 1.0, numberOfBigramsWithCount.get(count + 1.0) + 1.0);
 			}
@@ -226,7 +226,7 @@ public class Bigram {
 			for (String word2 : innerMap.keySet()) {
 				double count = innerMap.get(word2);
 				if (!numberOfBigramsWithCount.containsKey(count + 1)) {
-					numberOfBigramsWithCount.put(count + 1, 0.0);
+					numberOfBigramsWithCount.putIfAbsent(count + 1, 0.0);
 				}
 				// c* = (c+1) * N(c+1) / N(c)
 				double newCount = (count + 1) * (numberOfBigramsWithCount.get(count + 1.0))

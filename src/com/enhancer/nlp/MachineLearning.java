@@ -11,7 +11,7 @@ public class MachineLearning {
 		String word1 = "";
 		int len = sarr.length;
 		List<String> list = new ArrayList<>();
-		if (len >= 4) {
+		if (len >= 3) {
 			word1 = sarr[len - 3] + " " + sarr[len - 2];
 			list = switchToTrigrams(suggList, word1);
 		} else {

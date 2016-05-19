@@ -1,11 +1,22 @@
 package com.enhancer.nlp;
 
+/**
+ * @author PRITAM. Created for all Heuristic calculations needed for Spelling
+ *         Correction algorithms.
+ *
+ */
 @SuppressWarnings("unused")
 public class Calculations {
 
-	// Calculate maximum Edit Distance using search string length as input
+	/**
+	 * Calculating maximum Edit Distance using search string length as input
+	 * based on some observations and heuristic calculations
+	 * 
+	 * @param len
+	 *            as length of string
+	 * 
+	 */
 	public int determineMaxEdist(int len) {
-
 		double res = 0;
 		res += Math.log(len) / Math.log(2);
 		if (len >= 9)
@@ -17,12 +28,15 @@ public class Calculations {
 		if (len >= 36)
 			res += (Math.log(len) / Math.log(6)) - 1;
 		int result = (int) Math.round(res);
-
 		return result;
 	}
 
+	/**
+	 * Confusion Matrix for addition of Character c2 after c1 based on Noisy
+	 * Channel Model
+	 * 
+	 */
 	public void confusionMatrixAdd() {
-
 		double add[][] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 				{ 0, 15, 1, 14, 7, 10, 0, 1, 1, 33, 1, 4, 31, 2, 39, 12, 4, 3, 28, 134, 7, 28, 0, 1, 1, 4, 1 },
 				{ 0, 3, 11, 0, 0, 7, 0, 1, 0, 50, 0, 0, 15, 0, 1, 1, 0, 0, 5, 16, 0, 0, 3, 0, 0, 0, 0 },
@@ -51,14 +65,22 @@ public class Calculations {
 				{ 0, 5, 1, 2, 0, 3, 0, 0, 0, 2, 0, 0, 1, 1, 6, 0, 0, 0, 1, 33, 1, 13, 0, 1, 0, 2, 0 },
 				{ 0, 2, 0, 0, 0, 5, 1, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4 },
 				{ 0, 46, 8, 9, 8, 26, 11, 14, 3, 5, 1, 17, 5, 6, 2, 2, 10, 0, 6, 23, 2, 11, 1, 2, 1, 1, 2 } };
-
 	}
 
+	/**
+	 * Calculates the probability of addition of Character c2 after c1 based on
+	 * Noisy Channel Model
+	 * 
+	 * @param i
+	 *            as the ASCII code for Character c1
+	 * @param j
+	 *            as the ASCII code for Character c2
+	 * 
+	 */
 	public double addProbability(int i, int j) {
-
+		// If not in range return 0
 		if (i < 1 || i > 26 || j < 1 || j > 26)
 			return 0;
-
 		double addProb[][] = {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -117,16 +139,23 @@ public class Calculations {
 				{ 0.0, 0.207, 0.036, 0.041, 0.036, 0.117, 0.05, 0.063, 0.014, 0.023, 0.0050, 0.077, 0.023, 0.027,
 						0.0090, 0.0090, 0.045, 0.0, 0.027, 0.104, 0.0090, 0.05, 0.0050, 0.0090, 0.0050, 0.0050,
 						0.0090 } };
-
 		return addProb[i][j];
-
 	}
 
+	/**
+	 * Calculates the score based on probability of addition of Character c2
+	 * after c1 and after normalization
+	 * 
+	 * @param i
+	 *            as the ASCII code for Character c1
+	 * @param j
+	 *            as the ASCII code for Character c2
+	 * 
+	 */
 	public double addScore(int i, int j) {
-
+		// If not in range return 1, as all the score ranges between 0 and 1
 		if (i < 1 || i > 26 || j < 1 || j > 26)
 			return 1;
-
 		double additionScore[][] = {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -184,13 +213,15 @@ public class Calculations {
 						1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.05 },
 				{ 0.0, 0.0050, 0.028, 0.025, 0.028, 0.0090, 0.02, 0.016, 0.074, 0.044, 0.222, 0.013, 0.044, 0.037,
 						0.111, 0.111, 0.022, 1.0, 0.037, 0.01, 0.111, 0.02, 0.222, 0.111, 0.222, 0.222, 0.111 } };
-
 		return additionScore[i][j];
-
 	}
 
+	/**
+	 * Confusion Matrix for deletion of Character c2 after c1 based on Noisy
+	 * Channel Model
+	 * 
+	 */
 	public void confusionMatrixDel() {
-
 		double del[][] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 				{ 0, 0, 7, 58, 21, 3, 5, 18, 8, 61, 0, 4, 43, 5, 53, 0, 9, 0, 98, 28, 53, 62, 1, 0, 0, 2, 0 },
 				{ 0, 2, 2, 1, 0, 22, 0, 0, 0, 183, 0, 0, 26, 0, 0, 2, 0, 0, 6, 17, 0, 6, 1, 0, 0, 0, 0 },
@@ -219,14 +250,22 @@ public class Calculations {
 				{ 0, 2, 1, 34, 0, 2, 0, 1, 0, 1, 0, 0, 1, 2, 1, 1, 1, 0, 0, 17, 1, 0, 0, 1, 0, 0, 0 },
 				{ 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
 				{ 0, 20, 14, 41, 31, 20, 20, 7, 6, 20, 3, 6, 22, 16, 5, 5, 17, 0, 28, 26, 6, 2, 1, 24, 0, 0, 2 } };
-
 	}
 
+	/**
+	 * Calculates the probability of deletion of Character c2 after c1 based on
+	 * Noisy Channel Model
+	 * 
+	 * @param i
+	 *            as the ASCII code for Character c1
+	 * @param j
+	 *            as the ASCII code for Character c2
+	 * 
+	 */
 	public double delProbability(int i, int j) {
-
+		// If not in range, return 0
 		if (i < 1 || i > 26 || j < 1 || j > 26)
 			return 0;
-
 		double delProb[][] = {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -289,11 +328,20 @@ public class Calculations {
 
 	}
 
+	/**
+	 * Calculates the score based on probability of deletion of Character c2
+	 * after c1 and after normalization
+	 * 
+	 * @param i
+	 *            as the ASCII code for Character c1
+	 * @param j
+	 *            as the ASCII code for Character c2
+	 * 
+	 */
 	public double delScore(int i, int j) {
-
+		// If not in range return 1, as all the score ranges between 0 and 1
 		if (i < 1 || i > 26 || j < 1 || j > 26)
 			return 1;
-
 		double deleteScore[][] = {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -351,13 +399,15 @@ public class Calculations {
 						1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.25 },
 				{ 0.0, 0.017, 0.024, 0.0080, 0.011, 0.017, 0.017, 0.049, 0.057, 0.017, 0.114, 0.057, 0.016, 0.021,
 						0.068, 0.068, 0.02, 1.0, 0.012, 0.013, 0.057, 0.171, 0.342, 0.014, 1.0, 1.0, 0.171 } };
-
 		return deleteScore[i][j];
-
 	}
 
+	/**
+	 * Confusion Matrix for swapping of Character c1 with c2 based on Noisy
+	 * Channel Model
+	 * 
+	 */
 	public void confusionMatrixRev() {
-
 		double rev[][] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 				{ 0, 0, 0, 2, 1, 1, 0, 0, 0, 19, 0, 1, 14, 4, 25, 10, 3, 0, 27, 3, 5, 31, 0, 0, 0, 0, 0 },
 				{ 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 1, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0 },
@@ -385,14 +435,22 @@ public class Calculations {
 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 				{ 0, 0, 1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 3, 0, 0, 0, 2, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0 },
 				{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
-
 	}
 
+	/**
+	 * Calculates the probability of swapping of Character c1 with c2 based on
+	 * Noisy Channel Model
+	 * 
+	 * @param i
+	 *            as the ASCII code for Character c1
+	 * @param j
+	 *            as the ASCII code for Character c2
+	 * 
+	 */
 	public double revProbability(int i, int j) {
-
+		// If not in range, return 0
 		if (i < 1 || i > 26 || j < 1 || j > 26)
 			return 0;
-
 		double revProb[][] = {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -448,16 +506,23 @@ public class Calculations {
 						0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } };
-
 		return revProb[i][j];
-
 	}
 
+	/**
+	 * Calculates the score based on probability of swapping of Character c1
+	 * with c2 and after normalization
+	 * 
+	 * @param i
+	 *            as the ASCII code for Character c1
+	 * @param j
+	 *            as the ASCII code for Character c2
+	 * 
+	 */
 	public double revScore(int i, int j) {
-
+		// If not in range return 1, as all the score ranges between 0 and 1
 		if (i < 1 || i > 26 || j < 1 || j > 26)
 			return 1;
-
 		double reverseScore[][] = {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -513,13 +578,15 @@ public class Calculations {
 						1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 },
 				{ 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
 						1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 } };
-
 		return reverseScore[i][j];
-
 	}
 
+	/**
+	 * Confusion Matrix for substitution of Character c1 with c2 based on Noisy
+	 * Channel Model
+	 * 
+	 */
 	public void confusionMatrixSub() {
-
 		double sub[][] = { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 				{ 0, 0, 0, 7, 1, 342, 0, 0, 2, 118, 0, 1, 0, 0, 3, 76, 0, 0, 1, 35, 9, 9, 0, 1, 0, 5, 0 },
 				{ 0, 0, 0, 9, 9, 2, 2, 3, 1, 0, 0, 0, 5, 11, 5, 0, 10, 0, 0, 2, 1, 0, 0, 8, 0, 0, 0 },
@@ -547,14 +614,22 @@ public class Calculations {
 				{ 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0 },
 				{ 0, 0, 0, 2, 0, 15, 0, 1, 7, 15, 0, 0, 0, 2, 0, 6, 1, 0, 7, 36, 8, 5, 0, 0, 1, 0, 0 },
 				{ 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 7, 5, 0, 0, 0, 0, 2, 21, 3, 0, 0, 0, 0, 3, 0 } };
-
 	}
 
+	/**
+	 * Calculates the probability of substitution of Character c1 with c2 based
+	 * on Noisy Channel Model
+	 * 
+	 * @param i
+	 *            as the ASCII code for Character c1
+	 * @param j
+	 *            as the ASCII code for Character c2
+	 * 
+	 */
 	public double subProbability(int i, int j) {
-
+		// If not in range, return 0
 		if (i < 1 || i > 26 || j < 1 || j > 26)
 			return 0;
-
 		double subProb[][] = {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -610,16 +685,23 @@ public class Calculations {
 						0.0, 0.066, 0.34, 0.075, 0.047, 0.0, 0.0, 0.0090, 0.0, 0.0 },
 				{ 0.0, 0.0, 0.0, 0.0, 0.146, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.146, 0.104, 0.0, 0.0, 0.0, 0.0, 0.042,
 						0.438, 0.063, 0.0, 0.0, 0.0, 0.0, 0.063, 0.0 } };
-
 		return subProb[i][j];
-
 	}
 
+	/**
+	 * Calculates the score based on probability of substitution of Character c1
+	 * with c2 and after normalization
+	 * 
+	 * @param i
+	 *            as the ASCII code for Character c1
+	 * @param j
+	 *            as the ASCII code for Character c2
+	 * 
+	 */
 	public double subScore(int i, int j) {
-
+		// If not in range return 1, as all the score ranges between 0 and 1
 		if (i < 1 || i > 26 || j < 1 || j > 26)
 			return 1;
-
 		double substituteScore[][] = {
 				{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 						0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -675,9 +757,7 @@ public class Calculations {
 						1.0, 0.015, 0.0030, 0.013, 0.021, 1.0, 1.0, 0.106, 1.0, 1.0 },
 				{ 0.0, 1.0, 1.0, 1.0, 0.069, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.069, 0.096, 1.0, 1.0, 1.0, 1.0, 0.24,
 						0.023, 0.16, 1.0, 1.0, 1.0, 1.0, 0.16, 1.0 } };
-
 		return substituteScore[i][j];
-
 	}
 
 }

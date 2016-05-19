@@ -85,9 +85,9 @@ public class SearchOnEnter {
 		DynamicBigram db = DynamicBigram.getInstance();
 		// Update dynamic bigram with user input
 		db.continueTraining(str);
+		// Update the Trigram if there are more than two words in the string
 		if (StringUtils.countMatches(str, " ") >= 2) {
 			DynamicTrigram dt = DynamicTrigram.getInstance();
-			// Update the Trigram
 			dt.continueTraining(str.split(" "));
 		}
 	}

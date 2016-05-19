@@ -92,7 +92,7 @@ public class SearchCall extends HttpServlet {
 					// If single word, sort the list
 					else {
 						Collections.sort(list);
-						if (list.size() > lim)
+						if (!spaceEncountered && list.size() > lim)
 							list = list.subList(0, lim);
 					}
 				} else {

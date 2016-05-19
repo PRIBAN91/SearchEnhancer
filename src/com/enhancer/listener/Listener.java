@@ -162,7 +162,7 @@ public class Listener implements ServletContextListener, ServletContextAttribute
 			// Initialize Bigram training with initial training set
 			Bigram bigram = Bigram.getInstance();
 			bigram.initializeTraining(hs);
-			// Initialize Tigram training with a Trigram training set f
+			// Initialize Tigram training with a Trigram training set
 			DynamicTrigram dt = DynamicTrigram.getInstance();
 			dt.initializeTraining(trigramSet);
 			// Initialize Dynamic Bigram training with initial training set same

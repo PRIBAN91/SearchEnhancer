@@ -139,6 +139,7 @@ public class SearchCall extends HttpServlet {
 								? session.getAttribute("SuggestionList") : new ArrayList<>());
 						corrFirstWord = (Boolean) (session.getAttribute("FirstWordCorrect") != null
 								? session.getAttribute("FirstWordCorrect") : false);
+						// Check contains if first word is incorrect
 						if (!corrFirstWord) {
 							if (list.size() > (lim >> 1))
 								list = list.subList(0, lim >> 1);

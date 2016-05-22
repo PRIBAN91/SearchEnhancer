@@ -2,8 +2,26 @@ package com.enhancer.nlp;
 
 import java.util.*;
 
+/**
+ * @author PRITAM. Created for breaking a word into multiple words.
+ *
+ */
 public class WordBreak {
 
+	/**
+	 * This method checks character sequence amongst set of words in the present
+	 * dictionary.
+	 * 
+	 * @param list
+	 *            as Suggestion List,
+	 * @param dict
+	 *            as set of dictionary words,
+	 * @param memory
+	 *            as set for memoization,
+	 * @param answer
+	 *            as the correct broken word
+	 * 
+	 */
 	public boolean find(List<String> list, String s, HashSet<String> dict, HashSet<String> memory, String answer) {
 		if (s.length() == 0) {
 			// System.out.println(answer);
@@ -33,19 +51,38 @@ public class WordBreak {
 		}
 	}
 
+	/**
+	 * This is where the processing starts.
+	 * 
+	 * @param list
+	 *            as Suggestion List,
+	 * @param word
+	 *            as the Searched String
+	 * 
+	 */
 	public List<String> wordBreakUtil(List<String> list, String word) {
-
 		HashSet<String> dict = new HashSet<>();
+		// Create a dictionary from list of suggestions
 		createDictionary(dict, list);
 		list = new ArrayList<>();
 		HashSet<String> memo = new HashSet<>();
+		// Try to find broken words
 		find(list, word, dict, memo, "");
-		//boolean result = find(list, word, dict, memo, "");
-		//System.out.println(result);
+		// boolean result = find(list, word, dict, memo, "");
+		// System.out.println(result);
 		return list;
 
 	}
 
+	/**
+	 * This method creates a dictionary set from list of suggestions.
+	 * 
+	 * @param dict
+	 *            as dictionary set,
+	 * @param list
+	 *            as suggestion list
+	 * 
+	 */
 	public void createDictionary(HashSet<String> dict, List<String> list) {
 		for (String s : list) {
 			String sarr[] = s.split(" ");

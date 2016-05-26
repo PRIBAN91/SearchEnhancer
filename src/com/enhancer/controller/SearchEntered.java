@@ -89,9 +89,10 @@ public class SearchEntered extends HttpServlet {
 							System.out.println("In word break.");
 							WordBreak wb = new WordBreak();
 							list = wb.wordBreakUtil(lst, searchStr);
-							// In this case also it is a definitive search. So
-							// increase the Ngram frequencies.
-							luw.updateNgrams(list.get(0));
+							// In this case also it is a definitive search, if
+							// list size > 0. So increase the Ngram frequencies.
+							if (!list.isEmpty())
+								luw.updateNgrams(list.get(0));
 						} else {
 							System.out.println("In previous suggestion for enter.");
 							// Check older suggestion for faster search.

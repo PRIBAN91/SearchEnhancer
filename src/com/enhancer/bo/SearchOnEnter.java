@@ -63,7 +63,10 @@ public class SearchOnEnter {
 		TreeSet<Correctspell> ts = luw.calculateEditDistanceArr(arr, str, len, lim >> 1, 1200);
 		int count = 0;
 		for (Correctspell csp : ts) {
-			list.add(csp.getS());
+			String s = csp.getS();
+			// Max limit is less, so hash set is not used
+			if (!list.contains(s))
+				list.add(s);
 			count++;
 			// Take the top suggestions
 			if (count == lim)

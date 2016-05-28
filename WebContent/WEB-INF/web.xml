@@ -5,10 +5,11 @@
 	id="WebApp_ID" version="3.1">
 	<display-name>Search Enhancer</display-name>
 	<description>
-      This is a simple search API for E-commerce and other catalog based applications.
-      It helps users to have an efficient(faster) and effective(relevant) search experience. 
+     This is a simple search API for E-commerce and other catalog based applications.
+     It helps users to have an efficient(faster) and effective(relevant) search experience. 
     </description>
 	<welcome-file-list>
+		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	<error-page>

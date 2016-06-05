@@ -1,12 +1,9 @@
 package com.enhancer.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
- * @author PRITAM. Created for Hibernate ORM mapping with table. You can change
- *         the table and column name here according to your wish.
+ * @author PRITAM. Created for Hibernate ORM mapping with table.
  *
  */
 @Entity

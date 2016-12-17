@@ -10,4 +10,4 @@ There are two URLs that can be consumed and both of them returns JSON array data
 For more details on installation guidelines, assumptions made, functionality and which URLs to consume when, please refer to the Wiki. Please feel free to comment about any issues or improvements that can be made on this API.
 
 
-Link to Wiki : [SearchEnhancer Wiki](https://github.com/PRIBAN91/SearchEnhancer/wiki)
+Link here : [SearchEnhancer Wiki](https://github.com/PRIBAN91/SearchEnhancer/wiki)
